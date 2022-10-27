@@ -1,7 +1,5 @@
 # Compiled class file
 *.class
-auction_offline/*.class
-auction_online/*.class
 
 # Log file
 *.log

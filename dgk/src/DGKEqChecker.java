@@ -1,0 +1,47 @@
+package dgk.src.main;
+
+import dgk.src.main.misc.HomomorphicException;
+import dgk.src.main.misc.NTL;
+
+import java.io.*;
+import java.math.BigInteger;
+
+public class DGKEqChecker implements Serializable, DGK_Key {
+    @Serial
+    private static final long serialVersionUID = 4574519213202483629L;
+
+    // Equality Check Key Parameters
+    private final BigInteger p;
+    private final BigInteger vp;
+    private final BigInteger n;
+
+    private final long u;
+
+    public DGKEqChecker(BigInteger p, BigInteger vp, BigInteger n, long u) {
+        this.p = p;
+        this.vp = vp;
+        this.n = n;
+        this.u = u;
+    }
+
+    /**
+     * Compute DGK equality, if m1 and m2 are equal then m1 - m2 = 0
+     * (c1 - c2)^vp (mod p) = 1 <=> g^{vp*(m1 - m2)} (mod p) = 1
+     *
+     * @param ciphertext1 - DGK ciphertext1
+     * @param ciphertext2 - DGK ciphertext2
+     * @return boolean - true, if are equal, false otherwise.
+     * @throws HomomorphicException - If the ciphertext is larger than N, an exception will be thrown
+     */
+    public boolean check(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
+        if (ciphertext1.signum() == -1 || ciphertext1.compareTo(n) > 0) {
+            throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext1: " + ciphertext1);
+        } else if (ciphertext2.signum() == -1 || ciphertext2.compareTo(n) > 0) {
+            throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext2: " + ciphertext2);
+        }
+
+        BigInteger minus_ciphertext2 = ciphertext2.modPow(BigInteger.valueOf(u - 1), n);
+        BigInteger ciphertext1_minus_ciphertext2 = ciphertext1.modPow(minus_ciphertext2, n).mod(n);
+        return NTL.POSMOD(ciphertext1_minus_ciphertext2.modPow(vp, p), p).equals(BigInteger.ONE);
+    }
+}
