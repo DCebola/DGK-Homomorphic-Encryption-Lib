@@ -16,7 +16,7 @@ public class LibraryTesting {
     private static DGKEqChecker dgk_eq = null;
 
     @BeforeAll
-    public static void generate_keys() throws HomomorphicException {
+    public static void generate_keys() {
         DGKKeyPairGenerator p = new DGKKeyPairGenerator();
         dgk = p.generateKeyPair();
         dgk_pk = (DGKPublicKey) dgk.getPublic();
