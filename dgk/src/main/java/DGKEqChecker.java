@@ -1,7 +1,5 @@
-package dgk.src.main;
-
-import dgk.src.main.misc.HomomorphicException;
-import dgk.src.main.misc.NTL;
+import misc.HomomorphicException;
+import misc.NTL;
 
 import java.io.*;
 import java.math.BigInteger;

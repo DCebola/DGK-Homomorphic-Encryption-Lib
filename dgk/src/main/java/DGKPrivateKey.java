@@ -1,5 +1,3 @@
-package dgk.src.main;
-
 import java.io.*;
 import java.math.BigInteger;
 import java.security.PrivateKey;

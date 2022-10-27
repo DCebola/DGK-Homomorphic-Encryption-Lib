@@ -1,13 +1,11 @@
-package dgk.src.main;
-
 import java.io.*;
 import java.math.BigInteger;
 import java.security.PublicKey;
 import java.util.HashMap;
 
-import dgk.src.main.misc.CipherConstants;
-import dgk.src.main.misc.HomomorphicException;
-import dgk.src.main.misc.NTL;
+import misc.CipherConstants;
+import misc.HomomorphicException;
+import misc.NTL;
 
 public final class DGKPublicKey implements DGK_Key, Serializable, PublicKey, CipherConstants {
 

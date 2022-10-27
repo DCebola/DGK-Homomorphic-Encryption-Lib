@@ -1,13 +1,11 @@
-package dgk.src.main;
-
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGeneratorSpi;
 import java.security.SecureRandom;
 
-import dgk.src.main.misc.CipherConstants;
-import dgk.src.main.misc.HomomorphicException;
-import dgk.src.main.misc.NTL;
+import misc.CipherConstants;
+import misc.HomomorphicException;
+import misc.NTL;
 
 public final class DGKKeyPairGenerator extends KeyPairGeneratorSpi implements CipherConstants {
     // Default parameters

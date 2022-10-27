@@ -1,4 +1,4 @@
-package dgk.src.main.misc;
+package misc;
 
 import java.io.Serial;
 
