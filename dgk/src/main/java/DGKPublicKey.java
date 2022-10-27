@@ -169,18 +169,10 @@ public final class DGKPublicKey implements DGK_Key, Serializable, PublicKey, Cip
      * @throws HomomorphicException - If either ciphertext is greater than N or negative, throw an exception
      */
     public BigInteger subtract(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
-        BigInteger minus_ciphertext2 = multiply(ciphertext2, BigInteger.valueOf(u - 1));
-        return add(ciphertext1, minus_ciphertext2);
+        if (ciphertext2.signum() == -1 || ciphertext2.compareTo(n) > 0) {
+            throw new HomomorphicException("DGKMultiply Invalid Parameter ciphertext: " + ciphertext2);
+        }
+        return add(ciphertext1, ciphertext2.modPow(BigInteger.valueOf(u - 1), n));
     }
 
-    private BigInteger multiply(BigInteger ciphertext, BigInteger plaintext) throws HomomorphicException {
-        if (ciphertext.signum() == -1 || ciphertext.compareTo(n) == 1) {
-            throw new HomomorphicException("DGKMultiply Invalid Parameter ciphertext: " + ciphertext);
-        }
-        //if(plaintext.compareTo(bigU) == 1)
-        //{
-        //	throw new HomomorphicException("DGKMultiply Invalid Parameter plaintext: " + plaintext);
-        //}
-        return ciphertext.modPow(plaintext, n);
-    }
 }
