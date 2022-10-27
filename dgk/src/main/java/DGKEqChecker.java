@@ -32,14 +32,24 @@ public class DGKEqChecker implements Serializable, DGK_Key {
      * @throws HomomorphicException - If the ciphertext is larger than N, an exception will be thrown
      */
     public boolean check(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
+        return NTL.POSMOD(subtract(ciphertext1, ciphertext2).modPow(vp, p), p).equals(BigInteger.ONE);
+    }
+
+
+    /**
+     * Subtract encrypted values.
+     *
+     * @param ciphertext1 - Encrypted DGK value
+     * @param ciphertext2 - Encrypted DGK value
+     * @return DGK encrypted ciphertext with ciphertext1 - ciphertext2
+     * @throws HomomorphicException - If either ciphertext is greater than N or negative, throw an exception
+     */
+    private BigInteger subtract(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
         if (ciphertext1.signum() == -1 || ciphertext1.compareTo(n) > 0) {
             throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext1: " + ciphertext1);
         } else if (ciphertext2.signum() == -1 || ciphertext2.compareTo(n) > 0) {
             throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext2: " + ciphertext2);
         }
-
-        BigInteger minus_ciphertext2 = ciphertext2.modPow(BigInteger.valueOf(u - 1), n);
-        BigInteger ciphertext1_minus_ciphertext2 = ciphertext1.modPow(minus_ciphertext2, n).mod(n);
-        return NTL.POSMOD(ciphertext1_minus_ciphertext2.modPow(vp, p), p).equals(BigInteger.ONE);
+        return ciphertext1.multiply(ciphertext2.modPow(BigInteger.valueOf(u - 1), n)).mod(n);
     }
 }

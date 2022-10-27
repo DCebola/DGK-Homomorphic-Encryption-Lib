@@ -130,6 +130,7 @@ public final class DGKPublicKey implements DGK_Key, Serializable, PublicKey, Cip
         //first part = g^m (mod n)
         gLUT.computeIfAbsent(plaintext, p -> g.modPow(BigInteger.valueOf(p), n));
 
+
         // Generate 3 * t bit random number
         BigInteger r = NTL.generateXBitRandom(rLength * t);
 

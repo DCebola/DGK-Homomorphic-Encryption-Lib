@@ -1,47 +1,54 @@
 import misc.HomomorphicException;
 
+import java.math.BigInteger;
 import java.security.KeyPair;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-public class LibraryTesting 
-{	
-	private static int KEY_SIZE = 1024;
-	private static KeyPair dgk = null;
-	
-	private static DGKPublicKey dgk_pk = null;
-	private static DGKPrivateKey dgk_sk = null;
-	
-	@BeforeAll
-	public static void generate_keys() throws HomomorphicException {
-		DGKKeyPairGenerator p = new DGKKeyPairGenerator();
-		dgk = p.generateKeyPair();
-		dgk_pk = (DGKPublicKey) dgk.getPublic();
-		dgk_sk = (DGKPrivateKey) dgk.getPrivate();
-	}
-	
-	@Test
-	public void basic_DGK() throws HomomorphicException {
-		/*
-		 Test D(E(X)) = X
-		BigInteger a = dgk_pk.encrypt(BigInteger.TEN);
-		a = BigInteger.valueOf(DGKOperations.decrypt(a, dgk_sk));
-		assertEquals(BigInteger.TEN, a);
-		
-		// Test Addition, note decrypting returns a long not BigInteger
-		a = DGKOperations.encrypt(a, dgk_pk);
-		a = DGKOperations.add(a, a, dgk_pk); //20
-		assertEquals(20, DGKOperations.decrypt(a, dgk_sk));
-		
-		// Test Subtraction, note decrypting returns a long not BigInteger
-		a = DGKOperations.subtract(a, DGKOperations.encrypt(BigInteger.TEN, dgk_pk), dgk_pk);// 20 - 10
-		assertEquals(10, DGKOperations.decrypt(a, dgk_sk));
-		
-		// Test Multiplication, note decrypting returns a long not BigInteger
-		a = DGKOperations.multiply(a, BigInteger.TEN, dgk_pk); // 10 * 10
-		assertEquals(100, DGKOperations.decrypt(a, dgk_sk));
-		*/
+import static org.junit.jupiter.api.Assertions.*;
+
+public class LibraryTesting {
+    private static int KEY_SIZE = 1024;
+    private static KeyPair dgk = null;
+
+    private static DGKPublicKey dgk_pk = null;
+    private static DGKEqChecker dgk_eq = null;
+
+    @BeforeAll
+    public static void generate_keys() throws HomomorphicException {
+        DGKKeyPairGenerator p = new DGKKeyPairGenerator();
+        dgk = p.generateKeyPair();
+        dgk_pk = (DGKPublicKey) dgk.getPublic();
+        DGKPrivateKey dgk_sk = (DGKPrivateKey) dgk.getPrivate();
+        dgk_eq = new DGKEqChecker(dgk_sk.getP(), dgk_sk.getVp(), dgk_pk.getN(), dgk_pk.getU());
+
+    }
+
+    @Test
+    public void basic_DGK() throws HomomorphicException {
+        BigInteger encrypted_zero = dgk_pk.encrypt(BigInteger.ZERO);
+        assertNotEquals(encrypted_zero, BigInteger.ONE);
+
+        BigInteger a = dgk_pk.encrypt(BigInteger.TWO);
+        BigInteger b = dgk_pk.encrypt(BigInteger.TWO);
+        assertNotEquals(a, b);
+
+        BigInteger a_minus_b = dgk_pk.subtract(a, b);
+        BigInteger b_minus_a = dgk_pk.subtract(b, a);
+        assertNotEquals(a_minus_b, b_minus_a);
+
+		assertTrue(dgk_eq.check(encrypted_zero, encrypted_zero));
+		assertTrue(dgk_eq.check(a, a));
+		assertTrue(dgk_eq.check(b, b));
+		assertTrue(dgk_eq.check(a, b));
+		assertTrue(dgk_eq.check(b, a));
+		assertTrue(dgk_eq.check(a_minus_b, b_minus_a));
+		assertTrue(dgk_eq.check(b_minus_a, a_minus_b));
+        assertFalse(dgk_eq.check(encrypted_zero, b));
+        assertFalse(dgk_eq.check(encrypted_zero, a));
+        assertFalse(dgk_eq.check(b, encrypted_zero));
+        assertFalse(dgk_eq.check(a, encrypted_zero));
 	}
 
 }
