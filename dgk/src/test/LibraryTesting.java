@@ -100,7 +100,7 @@ public class LibraryTesting {
         BigInteger a = dgk_pk.encrypt(BigInteger.TWO);
         BigInteger b = dgk_pk.encrypt(BigInteger.TWO);
         long startTime = System.nanoTime();
-        int numOps = 1000000;
+        int numOps = 100000;
         for (int i = 0; i < numOps; i++)
             dgk_eq.check(a, b);
         long endTime = System.nanoTime();
@@ -117,7 +117,7 @@ public class LibraryTesting {
         long duration_total = 0;
         long duration_decrypt = 0;
         long duration_equal = 0;
-        int numOps = 1000000;
+        int numOps = 100000;
 
         for (int i = 0; i < numOps; i++) {
             byte[] rnd_iv_a = generateIv();
