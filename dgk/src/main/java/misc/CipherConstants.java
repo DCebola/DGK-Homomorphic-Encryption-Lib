@@ -6,6 +6,7 @@ import java.math.BigInteger;
 // 1- KeyPairGenerators
 // 2- Ciphers (ElGamal)
 public interface CipherConstants {
+    int KEY_SIZE = 2048;
     // controls the error probability of the primality testing algorithm
      int CERTAINTY = 40;
     // This variable has been needed a lot, but I want to keep it a Java 8 library

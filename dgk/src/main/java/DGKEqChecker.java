@@ -8,18 +8,26 @@ public class DGKEqChecker implements Serializable, DGK_Key {
     @Serial
     private static final long serialVersionUID = 4574519213202483629L;
 
-    // Equality Check Key Parameters
     private final BigInteger p;
     private final BigInteger vp;
     private final BigInteger n;
-
     private final long u;
 
-    public DGKEqChecker(BigInteger p, BigInteger vp, BigInteger n, long u) {
-        this.p = p;
-        this.vp = vp;
-        this.n = n;
-        this.u = u;
+
+    public DGKEqChecker(DGKEqKey key) {
+        this.p = key.getP();
+        this.vp = key.getVp();
+        this.n = key.getN();
+        this.u = key.getU();
+    }
+
+    /**
+     *
+     * @param ciphertext - DGK ciphertext
+     * @return ciphertext.mod(n)
+     */
+    public BigInteger mod(BigInteger ciphertext) {
+        return ciphertext.mod(n);
     }
 
     /**
@@ -44,12 +52,12 @@ public class DGKEqChecker implements Serializable, DGK_Key {
      * @return DGK encrypted ciphertext with ciphertext1 - ciphertext2
      * @throws HomomorphicException - If either ciphertext is greater than N or negative, throw an exception
      */
-    private BigInteger subtract(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
+    public BigInteger subtract(BigInteger ciphertext1, BigInteger ciphertext2) throws HomomorphicException {
         if (ciphertext1.signum() == -1 || ciphertext1.compareTo(n) > 0) {
             throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext1: " + ciphertext1);
         } else if (ciphertext2.signum() == -1 || ciphertext2.compareTo(n) > 0) {
             throw new HomomorphicException("DGKEqCheck: Invalid Parameter ciphertext2: " + ciphertext2);
         }
-        return ciphertext1.multiply(ciphertext2.modPow(BigInteger.valueOf(u - 1), n)).mod(n);
+        return ciphertext1.multiply(ciphertext2.modPow(BigInteger.valueOf(u-1), n)).mod(n);
     }
 }
